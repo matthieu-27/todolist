@@ -4,13 +4,13 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Collection;
 
-import org.springframework.security.core.userdetails.User;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -32,11 +32,9 @@ public class TodoList implements Serializable {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
-    @OneToMany(mappedBy = "todolist")
+    @OneToMany(mappedBy = "todoList", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
     private Collection<Task> tasks;
-
-    @ManyToOne
-    private User user;
 
     @Override
     public String toString() {
