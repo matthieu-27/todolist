@@ -3,6 +3,9 @@ package fr.fms.todolist.entities;
 import java.io.Serializable;
 import java.util.Collection;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -26,7 +29,8 @@ public class Category implements Serializable {
   private Long id;
   private String name;
 
-  @OneToMany(mappedBy = "category")
+  @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, orphanRemoval = true)
+  @JsonManagedReference
   private Collection<Task> tasks;
 
   public Category(String name) {
