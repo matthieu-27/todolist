@@ -33,7 +33,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
                         .requestMatchers("/admin").hasRole("USER")
-                        .requestMatchers("/products").hasAnyRole("USER", "ADMIN")
+                        .requestMatchers("/dashboard").hasAnyRole("USER", "ADMIN")
                         .anyRequest().authenticated())
                 .httpBasic(Customizer.withDefaults());
 

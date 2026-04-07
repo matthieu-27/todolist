@@ -7,7 +7,7 @@ import org.springframework.web.servlet.view.RedirectView;
 @Controller
 public class TaskController {
 
-    @GetMapping("/products")
+    @GetMapping("/dashboard")
     public String getProducts() {
         return "tasks";
     }
