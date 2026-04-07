@@ -4,6 +4,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.servlet.view.RedirectView;
 
+import jakarta.servlet.http.HttpServletRequest;
+
 @Controller
 public class TaskController {
 
@@ -25,5 +27,10 @@ public class TaskController {
     @GetMapping("/home")
     public String index() {
         return "tasks";
+    }
+
+    @GetMapping("/error")
+    public String handleError(HttpServletRequest request) {
+        return "error";
     }
 }

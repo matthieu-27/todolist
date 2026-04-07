@@ -1,6 +1,5 @@
 package fr.fms.todolist.config;
 
-import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
@@ -31,10 +30,11 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
+                        .requestMatchers("/").permitAll()
+                        .requestMatchers("/home").permitAll()
                         .requestMatchers("/admin").hasRole("USER")
                         .requestMatchers("/dashboard").hasAnyRole("USER", "ADMIN")
-                        .anyRequest().authenticated())
+                        .anyRequest().permitAll())
                 .httpBasic(Customizer.withDefaults());
 
         return http.build();
