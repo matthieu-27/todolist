@@ -34,6 +34,7 @@ public class SecurityConfig {
                         .requestMatchers("/home").permitAll()
                         .requestMatchers("/admin").hasRole("USER")
                         .requestMatchers("/dashboard").hasAnyRole("USER", "ADMIN")
+                        .requestMatchers("/create-task").hasAnyRole("USER")
                         .anyRequest().permitAll())
                 .httpBasic(Customizer.withDefaults());
 
