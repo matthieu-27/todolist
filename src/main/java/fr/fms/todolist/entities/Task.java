@@ -1,7 +1,9 @@
 package fr.fms.todolist.entities;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
+import java.util.Date;
+
+import org.springframework.format.annotation.DateTimeFormat;
 
 import fr.fms.todolist.enums.Status;
 import jakarta.persistence.Entity;
@@ -34,10 +36,14 @@ public class Task implements Serializable {
 
     @Enumerated(EnumType.STRING)
     private Status status;
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
+    @DateTimeFormat(pattern = "dd-MM-yyyy")
+    private Date createdAt;
+    @DateTimeFormat(pattern = "dd-MM-yyyy")
+    private Date updatedAt;
+    @DateTimeFormat(pattern = "dd-MM-yyyy")
+    private Date scheduledAt;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     private Category category;
 
     @ManyToOne(fetch = FetchType.EAGER)
@@ -52,6 +58,7 @@ public class Task implements Serializable {
                 ", status='" + getStatus() + "'" +
                 ", createdAt='" + getCreatedAt() + "'" +
                 ", updatedAt='" + getUpdatedAt() + "'" +
+                ", scheduledAt='" + getScheduledAt() + "'" +
                 ", category='" + getCategory() + "'" +
                 "}";
     }
@@ -86,20 +93,28 @@ public class Task implements Serializable {
         this.status = status;
     }
 
-    public LocalDateTime getCreatedAt() {
+    public Date getCreatedAt() {
         return this.createdAt;
     }
 
-    public void setCreatedAt(LocalDateTime createdAt) {
+    public void setCreatedAt(Date createdAt) {
         this.createdAt = createdAt;
     }
 
-    public LocalDateTime getUpdatedAt() {
+    public Date getUpdatedAt() {
         return this.updatedAt;
     }
 
-    public void setUpdatedAt(LocalDateTime updatedAt) {
+    public void setUpdatedAt(Date updatedAt) {
         this.updatedAt = updatedAt;
+    }
+
+    public Date getScheduledAt() {
+        return this.scheduledAt;
+    }
+
+    public void setScheduledAt(Date scheduledAt) {
+        this.scheduledAt = scheduledAt;
     }
 
     public Category getCategory() {
