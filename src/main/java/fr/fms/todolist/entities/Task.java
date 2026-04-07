@@ -7,6 +7,7 @@ import fr.fms.todolist.enums.Status;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -36,8 +37,11 @@ public class Task implements Serializable {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private Category category;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    private TodoList todoList;
 
     @Override
     public String toString() {
