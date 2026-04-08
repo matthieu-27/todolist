@@ -42,7 +42,7 @@ public class SecurityConfig {
                         .requestMatchers("/").permitAll()
                         .requestMatchers("/home").permitAll()
                         .requestMatchers("/admin").hasRole("USER")
-                        .requestMatchers("/dashboard").hasAnyRole("USER", "ADMIN")
+                        .requestMatchers("/dashboard").hasAnyRole("USER")
                         .requestMatchers("/create-task").hasAnyRole("USER")
                         .anyRequest().permitAll())
                 .httpBasic(Customizer.withDefaults());
