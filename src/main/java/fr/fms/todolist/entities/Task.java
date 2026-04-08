@@ -14,6 +14,9 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
+import jakarta.validation.constraints.FutureOrPresent;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -31,14 +34,18 @@ public class Task implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotBlank(message = "Title must not be blank.")
     private String title;
+    @NotBlank(message = "Description must not be blank.")
     private String description;
 
     @Enumerated(EnumType.STRING)
     private Status status;
     @DateTimeFormat(pattern = "dd-MM-yyyy")
+    @FutureOrPresent
     private Date createdAt;
     @DateTimeFormat(pattern = "dd-MM-yyyy")
+    @FutureOrPresent
     private Date updatedAt;
     @DateTimeFormat(pattern = "dd-MM-yyyy")
     private Date scheduledAt;
@@ -60,6 +67,7 @@ public class Task implements Serializable {
                 ", updatedAt='" + getUpdatedAt() + "'" +
                 ", scheduledAt='" + getScheduledAt() + "'" +
                 ", category='" + getCategory() + "'" +
+                ", todoList='" + getTodoList() + "'" +
                 "}";
     }
 
@@ -125,5 +133,12 @@ public class Task implements Serializable {
         this.category = category;
     }
 
+    public TodoList getTodoList() {
+        return this.todoList;
+    }
+
+    public void setTodoList(TodoList todoList) {
+        this.todoList = todoList;
+    }
     // #endregion
 }
