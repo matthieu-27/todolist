@@ -199,6 +199,18 @@
               <div class="card-body">
                 <h5 class="card-title" th:text="${todoTask.title}" />
                 <p class="card-text" th:text="${todoTask.description}" />
+                <a
+                  th:href="@{/delete-task/{id}(id=${todoTask.id})}"
+                  class="btn btn-primary"
+                >
+                  Supprimer
+                </a>
+                <a
+                  th:href="@{/edit-task/{id}(id=${todoTask.id})}"
+                  class="btn btn-primary"
+                >
+                  Modifier
+                </a>
               </div>
             </div>
           </div>
@@ -211,10 +223,22 @@
               <div class="card-body">
                 <h5 class="card-title" th:text="${doingTask.title}" />
                 <p class="card-text" th:text="${doingTask.description}" />
+                <a
+                  th:href="@{/delete-task/{id}(id=${doingTask.id})}"
+                  class="btn btn-primary"
+                >
+                  Supprimer
+                </a>
+                <a
+                  th:href="@{/edit-task/{id}(id=${doingTask.id})}"
+                  class="btn btn-primary"
+                >
+                  Modifier
+                </a>
               </div>
             </div>
           </div>
-          <div class="col" th:each="doneTask : ${done}">
+          <div class="col" th:each="doneTask, status : ${done}">
             <div class="card text-bg-primary mb-3">
               <div
                 class="card-header"
@@ -223,6 +247,18 @@
               <div class="card-body">
                 <h5 class="card-title" th:text="${doneTask.title}" />
                 <p class="card-text" th:text="${doneTask.description}" />
+                <a
+                  th:href="@{/delete-task/{id}(id=${doneTask.id})}"
+                  class="btn btn-primary"
+                >
+                  Supprimer
+                </a>
+                <a
+                  th:href="@{/edit-task/{id}(id=${doneTask.id})}"
+                  class="btn btn-primary"
+                >
+                  Modifier
+                </a>
               </div>
             </div>
           </div>
