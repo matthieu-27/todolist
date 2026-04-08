@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
+import org.springframework.security.core.Authentication;
+
 import fr.fms.todolist.dao.CategoryRepository;
 import fr.fms.todolist.dao.TaskRepository;
 import fr.fms.todolist.entities.Category;
@@ -45,12 +47,22 @@ public class TaskController {
     }
 
     @GetMapping("/home")
-    public String index(Model model) {
+    public String index(Model model, Authentication authentication) {
         List<Task> todo, doing, done;
         List<Category> categories = categoryRepository.findAll();
-        todo = taskRepository.findByStatus(Status.TODO);
-        doing = taskRepository.findByStatus(Status.DOING);
-        done = taskRepository.findByStatus(Status.DONE);
+
+        if (authentication != null && authentication.isAuthenticated()) {
+            // Utilisateur authentifié : afficher les tâches réelles
+            todo = taskRepository.findByStatus(Status.TODO);
+            doing = taskRepository.findByStatus(Status.DOING);
+            done = taskRepository.findByStatus(Status.DONE);
+        } else {
+            // Utilisateur non authentifié : afficher des tâches fictives
+            todo = createFakeTasks(Status.TODO);
+            doing = createFakeTasks(Status.DOING);
+            done = createFakeTasks(Status.DONE);
+        }
+
         Task task = new Task();
         model.addAttribute("task", task);
         model.addAttribute("status", Status.values());
@@ -59,6 +71,23 @@ public class TaskController {
         model.addAttribute("doing", doing);
         model.addAttribute("done", done);
         return "tasks";
+    }
+
+    private List<Task> createFakeTasks(Status status) {
+        List<Task> tasks = new ArrayList<>();
+        Category fakeCategory = new Category("Exemple");
+
+        for (int i = 1; i <= 3; i++) {
+            Task task = Task.builder()
+                    .title("Tâche fictive " + i + " - " + status)
+                    .description("Description de la tâche fictive " + i)
+                    .status(status)
+                    .category(fakeCategory)
+                    .build();
+            tasks.add(task);
+        }
+
+        return tasks;
     }
 
     @GetMapping("/error")
