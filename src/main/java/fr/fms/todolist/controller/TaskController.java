@@ -1,5 +1,6 @@
 package fr.fms.todolist.controller;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -79,4 +80,10 @@ public class TaskController {
         model.addAttribute("categories", categories);
         return "tasks/create";
     }
+
+    @GetMapping("/create-category")
+    public String createCategory(Model model) {
+        return "categories/create";
+    }
+
 }
