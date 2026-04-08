@@ -47,9 +47,14 @@ public class TaskController {
     @GetMapping("/home")
     public String index(Model model) {
         List<Task> todo, doing, done;
+        List<Category> categories = categoryRepository.findAll();
         todo = taskRepository.findByStatus(Status.TODO);
         doing = taskRepository.findByStatus(Status.DOING);
         done = taskRepository.findByStatus(Status.DONE);
+        Task task = new Task();
+        model.addAttribute("task", task);
+        model.addAttribute("status", Status.values());
+        model.addAttribute("categories", categories);
         model.addAttribute("todo", todo);
         model.addAttribute("doing", doing);
         model.addAttribute("done", done);

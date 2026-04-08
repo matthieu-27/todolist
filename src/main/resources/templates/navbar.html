@@ -1,9 +1,5 @@
 <!doctype html>
-<html
-  xmlns:th="http://www.thymeleaf.org"
-  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-  layout:decorate="layout"
->
+<html xmlns:th="http://www.thymeleaf.org">
   <body>
     <div th:fragment="navbar">
       <nav class="navbar navbar-expand-lg bg-body-tertiary">
@@ -28,9 +24,6 @@
             TodoList App</a
           >
           <div class="d-flex align-items-center gap-3">
-            <a th:href="@{/create-task}" class="btn btn-outline-primary"
-              >Créer une tâche</a
-            >
             <a th:href="@{/dashboard}" class="btn btn-primary" type="submit">
               Connexion
             </a>
