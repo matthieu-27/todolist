@@ -2,6 +2,7 @@ package fr.fms.todolist.controller;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -127,6 +128,17 @@ public class TaskController {
     @GetMapping("/delete-task/{taskId}")
     public String deleteTask(@PathVariable long taskId) {
         taskRepository.deleteById(taskId);
+        return "redirect:/";
+    }
+
+    @GetMapping("/edit-task/{taskId}")
+    public String editTask(@PathVariable long taskId, Model model) {
+        Optional<Task> taskOpt = taskRepository.findById(taskId);
+        if (taskOpt.isPresent()) {
+            Task task = taskOpt.get();
+            model.addAttribute("task", task);
+            return "tasks";
+        }
         return "redirect:/";
     }
 
