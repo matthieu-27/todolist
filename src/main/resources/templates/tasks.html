@@ -26,14 +26,40 @@
               <div class="card-body">Done</div>
             </div>
           </div>
-          <div class="col">
-            <div class="card">
-              <div class="card-body">Hi Task 4</div>
+          <div class="col" th:each="todoTask : ${todo}">
+            <div class="card text-bg-primary mb-3">
+              <div
+                class="card-header"
+                th:text="${todoTask.getCategory().getName()}"
+              />
+              <div class="card-body">
+                <h5 class="card-title" th:text="${todoTask.title}" />
+                <p class="card-text" th:text="${todoTask.description}" />
+              </div>
             </div>
           </div>
-          <div class="col">
-            <div class="card">
-              <div class="card-body">Hi Task 5</div>
+          <div class="col" th:each="doingTask : ${doing}">
+            <div class="card text-bg-primary mb-3">
+              <div
+                class="card-header"
+                th:text="${doingTask.getCategory().getName()}"
+              />
+              <div class="card-body">
+                <h5 class="card-title" th:text="${doingTask.title}" />
+                <p class="card-text" th:text="${doingTask.description}" />
+              </div>
+            </div>
+          </div>
+          <div class="col" th:each="doneTask : ${done}">
+            <div class="card text-bg-primary mb-3">
+              <div
+                class="card-header"
+                th:text="${doneTask.getCategory().getName()}"
+              />
+              <div class="card-body">
+                <h5 class="card-title" th:text="${doneTask.title}" />
+                <p class="card-text" th:text="${doneTask.description}" />
+              </div>
             </div>
           </div>
         </div>
