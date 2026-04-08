@@ -68,6 +68,7 @@
                   id="category"
                   class="form-select"
                   aria-label="Select a category"
+                  th:if="${categories.size() > 0}"
                 >
                   <option
                     th:each="category, status : ${categories}"
@@ -75,7 +76,17 @@
                     th:value="${status.count}"
                   />
                 </select>
-              </div>
+                <!-- Button trigger modal -->
+                <a
+                  type="button"
+                  class="btn btn-primary"
+                  th:if="${categories.size() == 0}"
+                  th:href="@{/create-category}"
+                >
+                  Créer une catégorie
+                </a>
+
+                
               <ul th:each="error : ${errors}">
                 <li th:text="${error}"></li>
               </ul>
