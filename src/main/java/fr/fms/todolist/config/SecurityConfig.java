@@ -39,6 +39,7 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/public/**", "/admin", "/css/**").permitAll()
                         .requestMatchers("/").permitAll()
                         .requestMatchers("/home").permitAll()
                         .requestMatchers("/admin").hasRole("USER")
@@ -47,7 +48,7 @@ public class SecurityConfig {
                         .requestMatchers("/delete-category/**").hasRole("USER")
                         .requestMatchers("/dashboard").hasRole("USER")
                         .requestMatchers("/create-task").hasRole("USER")
-                        .anyRequest().permitAll())
+                        .anyRequest().authenticated())
                 .httpBasic(Customizer.withDefaults());
 
         return http.build();
