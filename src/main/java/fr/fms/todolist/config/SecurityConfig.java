@@ -42,8 +42,11 @@ public class SecurityConfig {
                         .requestMatchers("/").permitAll()
                         .requestMatchers("/home").permitAll()
                         .requestMatchers("/admin").hasRole("USER")
-                        .requestMatchers("/dashboard").hasAnyRole("USER")
-                        .requestMatchers("/create-task").hasAnyRole("USER")
+                        .requestMatchers("/create-category").hasRole("USER")
+                        .requestMatchers("/delete-task/{taskId}").hasRole("USER")
+                        .requestMatchers("/delete-category/{categoryId}").hasRole("USER")
+                        .requestMatchers("/dashboard").hasRole("USER")
+                        .requestMatchers("/create-task").hasRole("USER")
                         .anyRequest().permitAll())
                 .httpBasic(Customizer.withDefaults());
 

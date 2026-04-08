@@ -33,7 +33,7 @@ public class TaskController {
 
     @GetMapping("/dashboard")
     public String getProducts() {
-        return "tasks";
+        return "redirect:/home";
     }
 
     @GetMapping("/admin")
@@ -92,7 +92,7 @@ public class TaskController {
 
     @GetMapping("/error")
     public String handleError(HttpServletRequest request) {
-        return "error";
+        return "redirect:/home";
     }
 
     @PostMapping("/create-task")
@@ -130,9 +130,9 @@ public class TaskController {
         return "redirect:/";
     }
 
-    @GetMapping("/delete-category/{categpryId}")
-    public String deleteCategory(@PathVariable long categpryId) {
-        categoryRepository.deleteById(categpryId);
+    @GetMapping("/delete-category/{categoryId}")
+    public String deleteCategory(@PathVariable long categoryId) {
+        categoryRepository.deleteById(categoryId);
         return "redirect:/";
     }
 
