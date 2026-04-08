@@ -1,6 +1,5 @@
 package fr.fms.todolist.controller;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,9 +9,8 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.servlet.view.RedirectView;
 
 import fr.fms.todolist.dao.CategoryRepository;
 import fr.fms.todolist.dao.TaskRepository;
@@ -84,6 +82,18 @@ public class TaskController {
     @GetMapping("/create-category")
     public String createCategory(Model model) {
         return "categories/create";
+    }
+
+    @GetMapping("/delete-task/{taskId}")
+    public String deleteTask(@PathVariable long taskId) {
+        taskRepository.deleteById(taskId);
+        return "redirect:/";
+    }
+
+    @GetMapping("/delete-category/{categpryId}")
+    public String deleteCategory(@PathVariable long categpryId) {
+        categoryRepository.deleteById(categpryId);
+        return "redirect:/";
     }
 
 }
