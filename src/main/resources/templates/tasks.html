@@ -9,92 +9,325 @@
   </head>
   <body>
     <div layout:fragment="content">
-      <div class="text-center">
-        <div class="row row-cols-3 gy-2">
-          <div class="col">
-            <div class="card">
-              <div class="card-body">TODO</div>
-            </div>
-          </div>
-          <div class="col">
-            <div class="card">
-              <div class="card-body">DOING</div>
-            </div>
-          </div>
-          <div class="col">
-            <div class="card">
-              <div class="card-body">Done</div>
-            </div>
-          </div>
-          <div class="col" th:each="todoTask : ${todo}">
-            <div class="card text-bg-primary mb-3">
-              <div
-                class="card-header"
-                th:text="${todoTask.getCategory().getName()}"
-              />
-              <div class="card-body">
-                <h5 class="card-title" th:text="${todoTask.title}" />
-                <p class="card-text" th:text="${todoTask.description}" />
-                <a
-                  th:href="@{/delete-task/{id}(id=${todoTask.id})}"
-                  class="btn btn-primary"
-                >
-                  Supprimer
-                </a>
-                <a
-                  th:href="@{/edit-task/{id}(id=${todoTask.id})}"
-                  class="btn btn-primary"
-                >
-                  Modifier
-                </a>
+      <div class="mb-3">
+        <div class="d-flex justify-content-between align-items-center">
+          <h2>Mes Tâches</h2>
+          <div
+            class="modal fade"
+            id="exampleModalToggle"
+            aria-hidden="true"
+            aria-labelledby="exampleModalToggleLabel"
+            tabindex="-1"
+          >
+            <div class="modal-dialog modal-dialog-centered">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h1 class="modal-title fs-5" id="exampleModalToggleLabel">
+                    Create Task
+                  </h1>
+                  <button
+                    type="button"
+                    class="btn-close"
+                    data-bs-dismiss="modal"
+                    aria-label="Close"
+                  ></button>
+                </div>
+                <div class="modal-body">
+                  <form
+                    th:action="@{/create-task}"
+                    th:object="${task}"
+                    method="post"
+                    class="needs-validation"
+                  >
+                    <div class="form-group mb-3">
+                      <label for="title" class="form-label">Title:</label>
+                      <input
+                        id="title"
+                        type="text"
+                        th:field="*{title}"
+                        class="form-control"
+                        required
+                      />
+                    </div>
+                    <div class="form-group mb-3">
+                      <label for="description" class="form-label"
+                        >Description:</label
+                      >
+                      <textarea
+                        id="description"
+                        th:field="*{description}"
+                        class="form-control"
+                        rows="3"
+                      ></textarea>
+                    </div>
+                    <div class="form-group mb-3">
+                      <label for="status" class="form-label">Status:</label>
+                      <select
+                        id="status"
+                        name="status"
+                        class="form-select"
+                        aria-label="Select a status"
+                      >
+                        <option
+                          th:each="taskStatus : ${status}"
+                          th:text="${taskStatus}"
+                          th:value="${taskStatus}"
+                          th:selected="${task.status == taskStatus}"
+                        />
+                      </select>
+                    </div>
+                    <div class="form-group mb-3">
+                      <label for="scheduledAt" class="form-label"
+                        >Scheduled at:</label
+                      >
+                      <input
+                        type="date"
+                        class="form-control"
+                        id="scheduledAt"
+                        th:field="*{scheduledAt}"
+                      />
+                    </div>
+                    <div class="form-group mb-3">
+                      <label for="category" class="form-label">Category:</label>
+                      <select
+                        id="category"
+                        th:field="*{category.id}"
+                        class="form-select"
+                        aria-label="Select a category"
+                      >
+                        <option value="">Select a category</option>
+                        <option
+                          th:each="category : ${categories}"
+                          th:text="${category.name}"
+                          th:value="${category.id}"
+                        />
+                      </select>
+                    </div>
+
+                    <div class="d-flex gap-2">
+                      <button type="submit" class="btn btn-outline-secondary">
+                        Save
+                      </button>
+                      <a th:href="@{/}" class="btn btn-secondary">Annuler</a>
+                    </div>
+                  </form>
+                </div>
               </div>
             </div>
           </div>
-          <div class="col" th:each="doingTask : ${doing}">
-            <div class="card text-bg-primary mb-3">
-              <div
-                class="card-header"
-                th:text="${doingTask.getCategory().getName()}"
-              />
-              <div class="card-body">
-                <h5 class="card-title" th:text="${doingTask.title}" />
-                <p class="card-text" th:text="${doingTask.description}" />
-                <a
-                  th:href="@{/delete-task/{id}(id=${doingTask.id})}"
-                  class="btn btn-primary"
-                >
-                  Supprimer
-                </a>
-                <a
-                  th:href="@{/edit-task/{id}(id=${doingTask.id})}"
-                  class="btn btn-primary"
-                >
-                  Modifier
-                </a>
+          <div
+            class="modal fade"
+            id="exampleModalToggle2"
+            aria-hidden="true"
+            aria-labelledby="exampleModalToggleLabel2"
+            tabindex="-1"
+          >
+            <div class="modal-dialog modal-dialog-centered">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h1 class="modal-title fs-5" id="exampleModalToggleLabel2">
+                    Create category
+                  </h1>
+                  <button
+                    type="button"
+                    class="btn-close"
+                    data-bs-dismiss="modal"
+                    aria-label="Close"
+                  ></button>
+                </div>
+                <div class="modal-body">
+                  <form action="">
+                    <div class="mb-3">
+                      <label for="exampleFormControlInput1" class="form-label"
+                        >Nom de la catégorie :</label
+                      >
+                      <input
+                        type="text"
+                        class="form-control"
+                        id="exampleFormControlInput1"
+                        placeholder="Cuisine"
+                      />
+                    </div>
+                    <div>
+                      <button class="btn btn-outline-secondary">
+                        Sauvegarder
+                      </button>
+                      <button class="btn btn-outline-dark">Annuler</button>
+                    </div>
+                  </form>
+                </div>
               </div>
             </div>
           </div>
-          <div class="col" th:each="doneTask, status : ${done}">
-            <div class="card text-bg-primary mb-3">
-              <div
-                class="card-header"
-                th:text="${doneTask.getCategory().getName()}"
-              />
-              <div class="card-body">
-                <h5 class="card-title" th:text="${doneTask.title}" />
-                <p class="card-text" th:text="${doneTask.description}" />
-                <a
-                  th:href="@{/delete-task/{id}(id=${doneTask.id})}"
-                  class="btn btn-primary"
-                >
-                  Supprimer
-                </a>
-                <a
-                  th:href="@{/edit-task/{id}(id=${doneTask.id})}"
-                  class="btn btn-primary"
-                >
-                  Modifier
-                </a>
+          <button
+            class="btn btn-outline-secondary"
+            data-bs-target="#exampleModalToggle"
+            data-bs-toggle="modal"
+          >
+            Create Task
+          </button>
+          <button
+            class="btn btn-outline-secondary"
+            data-bs-target="#exampleModalToggle2"
+            data-bs-toggle="modal"
+          >
+            Create Category
+          </button>
+          <div>
+            <a
+              th:href="${weeklyView} ? @{/home} : @{/home(weeklyView=true)}"
+              class="btn btn-outline-secondary"
+            >
+              <i class="bi bi-calendar-week"></i>
+              <span
+                th:text="${weeklyView} ? 'Affichage Normal' : 'Affichage par Semaine'"
+              ></span>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <div th:if="${weeklyView}">
+        <!-- Affichage par semaine -->
+        <div th:each="entry : ${tasksByWeek}" class="mb-4">
+          <h3 th:text="${entry.key}"></h3>
+          <div class="row row-cols-1 row-cols-md-3 g-4">
+            <div th:each="task : ${entry.value}" class="col">
+              <div class="card h-100">
+                <div
+                  class="card-header"
+                  th:text="${task.category != null} ? ${task.category.name} : 'Sans catégorie'"
+                ></div>
+                <div class="card-body">
+                  <h5 class="card-title" th:text="${task.title}"></h5>
+                  <p class="card-text" th:text="${task.description}"></p>
+                </div>
+                <div class="card-footer">
+                  <small
+                    class="text-muted"
+                    th:text="${#dates.format(task.scheduledAt, 'dd/MM/yyyy')}"
+                    th:if="${task.scheduledAt}"
+                  ></small>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div th:unless="${weeklyView}">
+        <!-- Affichage normal par statut -->
+        <div class="">
+          <div class="row row-cols-3 gy-2">
+            <div class="col">
+              <div class="card">
+                <div class="card-body">TODO</div>
+              </div>
+            </div>
+            <div class="col">
+              <div class="card">
+                <div class="card-body">DOING</div>
+              </div>
+            </div>
+            <div class="col">
+              <div class="card">
+                <div class="card-body">Done</div>
+              </div>
+            </div>
+            <!-- Tâches TODO -->
+            <div class="col" th:each="todoTask : ${todo}">
+              <div class="card mb-3">
+                <div
+                  class="card-header"
+                  th:text="${todoTask.category != null} ? ${todoTask.category.name} : 'Sans catégorie'"
+                />
+                <div class="card-body">
+                  <h5 class="card-title" th:text="${todoTask.title}" />
+                  <p class="card-text" th:text="${todoTask.description}" />
+                  <a
+                    th:href="@{/delete-task/{id}(id=${todoTask.id})}"
+                    class="btn btn-dark btn-sm"
+                  >
+                    Supprimer
+                  </a>
+                  <a
+                    th:href="@{/edit-task/{id}(id=${todoTask.id})}"
+                    class="btn btn-light btn-sm"
+                  >
+                    Modifier
+                  </a>
+                </div>
+                <div class="card-footer">
+                  <small
+                    class="text-muted"
+                    th:text="${#dates.format(todoTask.scheduledAt, 'dd/MM/yyyy')}"
+                    th:if="${todoTask.scheduledAt}"
+                  ></small>
+                </div>
+              </div>
+            </div>
+            <!-- Tâches DOING -->
+            <div class="col" th:each="doingTask : ${doing}">
+              <div class="card mb-3">
+                <div
+                  class="card-header"
+                  th:text="${doingTask.category != null} ? ${doingTask.category.name} : 'Sans catégorie'"
+                />
+                <div class="card-body">
+                  <h5 class="card-title" th:text="${doingTask.title}" />
+                  <p class="card-text" th:text="${doingTask.description}" />
+                  <a
+                    th:href="@{/delete-task/{id}(id=${doingTask.id})}"
+                    class="btn btn-dark btn-sm"
+                  >
+                    Supprimer
+                  </a>
+                  <a
+                    th:href="@{/edit-task/{id}(id=${doingTask.id})}"
+                    class="btn btn-light btn-sm"
+                  >
+                    Modifier
+                  </a>
+                </div>
+                <div class="card-footer">
+                  <small
+                    class="text-muted"
+                    th:text="${#dates.format(doingTask.scheduledAt, 'dd/MM/yyyy')}"
+                    th:if="${doingTask.scheduledAt}"
+                  ></small>
+                </div>
+              </div>
+            </div>
+            <!-- Tâches DONE -->
+            <div class="col" th:each="doneTask : ${done}">
+              <div class="card mb-3">
+                <div
+                  class="card-header"
+                  th:text="${doneTask.category != null} ? ${doneTask.category.name} : 'Sans catégorie'"
+                />
+                <div class="card-body">
+                  <h5 class="card-title" th:text="${doneTask.title}" />
+                  <p class="card-text" th:text="${doneTask.description}" />
+                  <a
+                    th:href="@{/delete-task/{id}(id=${doneTask.id})}"
+                    class="btn btn-dark btn-sm"
+                  >
+                    Supprimer
+                  </a>
+                  <a
+                    th:href="@{/edit-task/{id}(id=${doneTask.id})}"
+                    class="btn btn-light btn-sm"
+                  >
+                    Modifier
+                  </a>
+                </div>
+                <div class="card-footer">
+                  <small
+                    class="text-muted"
+                    th:text="${#dates.format(doneTask.scheduledAt, 'dd/MM/yyyy')}"
+                    th:if="${doneTask.scheduledAt}"
+                  ></small>
+                </div>
               </div>
             </div>
           </div>

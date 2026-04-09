@@ -1,8 +1,10 @@
 package fr.fms.todolist.controller;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
-import java.util.Optional;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -13,6 +15,7 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import org.springframework.security.core.Authentication;
 
@@ -49,30 +52,70 @@ public class TaskController {
     }
 
     @GetMapping("/home")
-    public String index(Model model, Authentication authentication) {
+    public String index(Model model, Authentication authentication,
+            @RequestParam(required = false) Boolean weeklyView) {
         List<Task> todo, doing, done;
         List<Category> categories = categoryRepository.findAll();
 
         if (authentication != null && authentication.isAuthenticated()) {
             // Utilisateur authentifié : afficher les tâches réelles
-            todo = taskRepository.findByStatus(Status.TODO);
-            doing = taskRepository.findByStatus(Status.DOING);
-            done = taskRepository.findByStatus(Status.DONE);
+            if (weeklyView != null && weeklyView) {
+                // Affichage par semaine
+                Map<String, List<Task>> tasksByWeek = groupTasksByWeek(taskRepository.findAll());
+                model.addAttribute("tasksByWeek", tasksByWeek);
+                model.addAttribute("weeklyView", true);
+            } else {
+                // Affichage normal
+                todo = taskRepository.findByStatus(Status.TODO);
+                doing = taskRepository.findByStatus(Status.DOING);
+                done = taskRepository.findByStatus(Status.DONE);
+                model.addAttribute("todo", todo);
+                model.addAttribute("doing", doing);
+                model.addAttribute("done", done);
+            }
         } else {
             // Utilisateur non authentifié : afficher des tâches fictives
-            todo = createFakeTasks(Status.TODO);
-            doing = createFakeTasks(Status.DOING);
-            done = createFakeTasks(Status.DONE);
+            if (weeklyView != null && weeklyView) {
+                // Affichage par semaine
+                Map<String, List<Task>> fakeTasksByWeek = groupFakeTasksByWeek();
+                model.addAttribute("tasksByWeek", fakeTasksByWeek);
+                model.addAttribute("weeklyView", true);
+            } else {
+                // Affichage normal
+                todo = createFakeTasks(Status.TODO);
+                doing = createFakeTasks(Status.DOING);
+                done = createFakeTasks(Status.DONE);
+                model.addAttribute("todo", todo);
+                model.addAttribute("doing", doing);
+                model.addAttribute("done", done);
+            }
         }
 
         Task task = new Task();
         model.addAttribute("task", task);
         model.addAttribute("status", Status.values());
         model.addAttribute("categories", categories);
-        model.addAttribute("todo", todo);
-        model.addAttribute("doing", doing);
-        model.addAttribute("done", done);
         return "tasks";
+    }
+
+    private Map<String, List<Task>> groupTasksByWeek(List<Task> tasks) {
+        return tasks.stream()
+                .filter(task -> task.getScheduledAt() != null)
+                .collect(Collectors.groupingBy(task -> {
+                    Calendar cal = Calendar.getInstance();
+                    cal.setTime(task.getScheduledAt());
+                    int week = cal.get(Calendar.WEEK_OF_YEAR);
+                    int year = cal.get(Calendar.YEAR);
+                    return "Semaine " + week + " - " + year;
+                }));
+    }
+
+    private Map<String, List<Task>> groupFakeTasksByWeek() {
+        List<Task> fakeTasks = new ArrayList<>();
+        for (Status status : Status.values()) {
+            fakeTasks.addAll(createFakeTasks(status));
+        }
+        return groupTasksByWeek(fakeTasks);
     }
 
     private List<Task> createFakeTasks(Status status) {
