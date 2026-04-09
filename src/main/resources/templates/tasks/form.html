@@ -1,0 +1,182 @@
+<!doctype html>
+<html
+  xmlns:th="http://www.thymeleaf.org"
+  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  layout:decorate="layout"
+>
+  <head>
+    <title>Task Form</title>
+    <script>
+      function checkDate() {
+        const scheduledAtInput = document.getElementById("scheduledAt");
+        const scheduledAt = new Date(scheduledAtInput.value);
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+
+        if (scheduledAt < today) {
+          const dateWarningModal = new bootstrap.Modal(
+            document.getElementById("dateWarningModal"),
+          );
+          dateWarningModal.show();
+          return false;
+        }
+        return true;
+      }
+    </script>
+  </head>
+  <body>
+    <div layout:fragment="content">
+      <div class="container mt-5">
+        <div class="row justify-content-center">
+          <div class="col-md-6">
+            <div class="card">
+              <div class="card-header">
+                <h1
+                  class="card-title"
+                  th:text="${task.id} ? 'Update Task' : 'Create Task'"
+                ></h1>
+              </div>
+              <div class="card-body">
+                <form
+                  th:object="${task}"
+                  th:action="${task.id != null} ? @{/update-task/} + ${task.id} : @{/create-task}"
+                  method="post"
+                  class="needs-validation"
+                >
+                  <div class="form-group mb-3">
+                    <label for="title" class="form-label">Title:</label>
+                    <input
+                      id="title"
+                      type="text"
+                      th:field="*{title}"
+                      class="form-control"
+                      required
+                    />
+                  </div>
+                  <div class="form-group mb-3">
+                    <label for="description" class="form-label"
+                      >Description:</label
+                    >
+                    <textarea
+                      id="description"
+                      th:field="*{description}"
+                      class="form-control"
+                      rows="3"
+                    ></textarea>
+                  </div>
+                  <div class="form-group mb-3">
+                    <label for="status" class="form-label">Status:</label>
+                    <select
+                      id="status"
+                      th:field="*{status}"
+                      class="form-select"
+                      aria-label="Select a status"
+                    >
+                      <option
+                        th:each="taskStatus : ${status}"
+                        th:text="${taskStatus}"
+                        th:value="${taskStatus}"
+                      />
+                    </select>
+                  </div>
+                  <div class="form-group mb-3">
+                    <label for="scheduledAt" class="form-label"
+                      >Scheduled at:</label
+                    >
+                    <input
+                      type="date"
+                      class="form-control"
+                      id="scheduledAt"
+                      th:field="*{scheduledAt}"
+                    />
+                  </div>
+                  <div class="form-group mb-3">
+                    <label for="category" class="form-label">Category:</label>
+                    <select
+                      id="category"
+                      th:field="*{category.id}"
+                      class="form-select"
+                      aria-label="Select a category"
+                    >
+                      <option value="">Select a category</option>
+                      <option
+                        th:each="category : ${categories}"
+                        th:text="${category.name}"
+                        th:value="${category.id}"
+                      />
+                    </select>
+                  </div>
+                  <ul th:if="${errors}" th:each="error : ${errors}">
+                    <li class="text-danger" th:text="${error}"></li>
+                  </ul>
+                  <div class="d-flex gap-2">
+                    <button
+                      type="submit"
+                      class="btn btn-primary"
+                      onclick="return checkDate();"
+                    >
+                      Save
+                    </button>
+                    <a th:href="@{/}" class="btn btn-secondary">Annuler</a>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Modal pour l'avertissement de date -->
+    <div
+      class="modal fade"
+      id="dateWarningModal"
+      tabindex="-1"
+      aria-labelledby="dateWarningModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="dateWarningModalLabel">
+              Avertissement
+            </h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            Vous avez sélectionné une date antérieure à aujourd'hui. Êtes-vous
+            sûr de vouloir continuer ?
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              Annuler
+            </button>
+            <button
+              type="button"
+              class="btn btn-primary"
+              id="confirmDateButton"
+            >
+              Continuer
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script>
+      document
+        .getElementById("confirmDateButton")
+        .addEventListener("click", function () {
+          document.getElementById("dateWarningModal").style.display = "none";
+          document.querySelector("form").submit();
+        });
+    </script>
+  </body>
+</html>

@@ -14,7 +14,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
-import jakarta.validation.constraints.FutureOrPresent;
+import jakarta.persistence.PrePersist;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -40,13 +40,11 @@ public class Task implements Serializable {
 
     @Enumerated(EnumType.STRING)
     private Status status;
-    @DateTimeFormat(pattern = "dd-MM-yyyy")
-    @FutureOrPresent
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date createdAt;
-    @DateTimeFormat(pattern = "dd-MM-yyyy")
-    @FutureOrPresent
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date updatedAt;
-    @DateTimeFormat(pattern = "dd-MM-yyyy")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date scheduledAt;
 
     @ManyToOne(fetch = FetchType.EAGER)
@@ -54,6 +52,16 @@ public class Task implements Serializable {
 
     @ManyToOne(fetch = FetchType.EAGER)
     private TodoList todoList;
+
+    @PrePersist
+    public void prePersist() {
+        if (this.createdAt == null) {
+            this.createdAt = new Date();
+        }
+        if (this.updatedAt == null) {
+            this.updatedAt = new Date();
+        }
+    }
 
     @Override
     public String toString() {

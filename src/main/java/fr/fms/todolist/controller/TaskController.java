@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -39,7 +40,7 @@ public class TaskController {
 
     @GetMapping("/admin")
     public String adminOnly() {
-        return "index";
+        return "redirect:/home";
     }
 
     @GetMapping("/")
@@ -104,7 +105,9 @@ public class TaskController {
                 errors.add(error.getDefaultMessage());
             }
             model.addAttribute("errors", errors);
-            return "tasks/create";
+            model.addAttribute("status", Status.values());
+            model.addAttribute("categories", categoryRepository.findAll());
+            return "tasks/form";
         }
         taskRepository.save(task);
         return "redirect:/";
@@ -117,12 +120,42 @@ public class TaskController {
         model.addAttribute("task", task);
         model.addAttribute("status", Status.values());
         model.addAttribute("categories", categories);
-        return "tasks/create";
+        return "tasks/form";
     }
 
     @GetMapping("/create-category")
     public String createCategory(Model model) {
         return "categories/create";
+    }
+
+    @GetMapping("/task/{taskId}")
+    public ResponseEntity<Task> getTask(@PathVariable long taskId) {
+        Task task = taskRepository.findById(taskId)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid task Id:" + taskId));
+        return ResponseEntity.ok(task);
+    }
+
+    @PostMapping("/update-task/{taskId}")
+    public String updateTask(@PathVariable long taskId, @Valid Task task, BindingResult result, Model model) {
+        if (result.hasErrors()) {
+            List<String> errors = new ArrayList<>();
+            for (FieldError error : result.getFieldErrors()) {
+                errors.add(error.getDefaultMessage());
+            }
+            model.addAttribute("errors", errors);
+            model.addAttribute("status", Status.values());
+            model.addAttribute("categories", categoryRepository.findAll());
+            return "tasks/form";
+        }
+        Task existingTask = taskRepository.findById(taskId)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid task Id:" + taskId));
+        existingTask.setTitle(task.getTitle());
+        existingTask.setDescription(task.getDescription());
+        existingTask.setStatus(task.getStatus());
+        existingTask.setScheduledAt(task.getScheduledAt());
+        existingTask.setCategory(task.getCategory());
+        taskRepository.save(existingTask);
+        return "redirect:/";
     }
 
     @GetMapping("/delete-task/{taskId}")
@@ -133,13 +166,13 @@ public class TaskController {
 
     @GetMapping("/edit-task/{taskId}")
     public String editTask(@PathVariable long taskId, Model model) {
-        Optional<Task> taskOpt = taskRepository.findById(taskId);
-        if (taskOpt.isPresent()) {
-            Task task = taskOpt.get();
-            model.addAttribute("task", task);
-            return "tasks";
-        }
-        return "redirect:/";
+        Task task = taskRepository.findById(taskId)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid task Id:" + taskId));
+        List<Category> categories = categoryRepository.findAll();
+        model.addAttribute("task", task);
+        model.addAttribute("status", Status.values());
+        model.addAttribute("categories", categories);
+        return "tasks/form";
     }
 
     @GetMapping("/delete-category/{categoryId}")
