@@ -48,7 +48,7 @@ public class SecurityConfig {
                         .requestMatchers("/delete-category/**").hasRole("USER")
                         .requestMatchers("/dashboard").hasRole("USER")
                         .requestMatchers("/create-task").hasRole("USER")
-                        .anyRequest().authenticated())
+                        .anyRequest().permitAll())
                 .httpBasic(Customizer.withDefaults());
 
         return http.build();
