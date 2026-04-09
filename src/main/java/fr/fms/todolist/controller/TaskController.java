@@ -26,6 +26,7 @@ import fr.fms.todolist.entities.Task;
 import fr.fms.todolist.enums.Status;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
+import org.springframework.web.bind.annotation.RequestBody;
 
 @Controller
 public class TaskController {
@@ -90,9 +91,10 @@ public class TaskController {
                 model.addAttribute("done", done);
             }
         }
-
+        Category category = new Category();
         Task task = new Task();
         model.addAttribute("task", task);
+        model.addAttribute("category", category);
         model.addAttribute("status", Status.values());
         model.addAttribute("categories", categories);
         return "tasks";
@@ -168,7 +170,21 @@ public class TaskController {
 
     @GetMapping("/create-category")
     public String createCategory(Model model) {
+        Category category = new Category();
+        model.addAttribute("category", category);
         return "categories/create";
+    }
+
+    @PostMapping("/save-category")
+    public String saveCategory(@Valid Category category, BindingResult result, Model model) {
+        if (result.hasErrors()) {
+            for (FieldError error : result.getFieldErrors()) {
+                System.out.println(error.getDefaultMessage());
+            }
+            return "tasks";
+        }
+        categoryRepository.save(category);
+        return "redirect:/";
     }
 
     @GetMapping("/task/{taskId}")

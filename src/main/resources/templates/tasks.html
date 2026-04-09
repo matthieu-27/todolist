@@ -136,16 +136,20 @@
                   ></button>
                 </div>
                 <div class="modal-body">
-                  <form action="">
-                    <div class="mb-3">
-                      <label for="exampleFormControlInput1" class="form-label"
-                        >Nom de la catégorie :</label
-                      >
+                  <form
+                    th:action="@{/save-category}"
+                    th:object="${category}"
+                    method="post"
+                    class="needs-validation"
+                  >
+                    <div class="form-group mb-3">
+                      <label for="name" class="form-label">Name:</label>
                       <input
+                        id="name"
                         type="text"
+                        th:field="*{name}"
                         class="form-control"
-                        id="exampleFormControlInput1"
-                        placeholder="Cuisine"
+                        required
                       />
                     </div>
                     <div>
