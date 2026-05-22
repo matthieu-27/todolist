@@ -11,4 +11,5 @@ import fr.fms.todolist.enums.Status;
 @Repository
 public interface TaskRepository extends JpaRepository<Task, Long> {
     List<Task> findByStatus(Status status);
+    List<Task> findByDescriptionContains(String description);
 }

@@ -23,9 +23,9 @@ public class DataInitializer {
             if (userRepository.count() == 0) {
                 // Créer un utilisateur par défaut
                 User defaultUser = User.builder()
-                        .username("john")
-                        .password(passwordEncoder.encode("password123"))
-                        .email("john@example.com")
+                        .username("lbertrand")
+                        .password(passwordEncoder.encode("Cerise2017!"))
+                        .email("l.bertrand@gmail.com")
                         .build();
                 userRepository.save(defaultUser);
 

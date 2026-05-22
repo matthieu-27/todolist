@@ -27,7 +27,6 @@ import fr.fms.todolist.entities.Task;
 import fr.fms.todolist.enums.Status;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
-import org.springframework.web.bind.annotation.RequestBody;
 
 @Controller
 public class TaskController {
@@ -141,6 +140,7 @@ public class TaskController {
                     .description("Description de la tâche fictive " + i)
                     .status(status)
                     .category(fakeCategory)
+                    .scheduledAt(new java.util.Date())
                     .build();
             tasks.add(task);
         }
@@ -202,9 +202,9 @@ public class TaskController {
 
     @GetMapping("/task/{taskId}")
     public ResponseEntity<Task> getTask(@PathVariable long taskId) {
-        Task task = taskRepository.findById(taskId)
-                .orElseThrow(() -> new IllegalArgumentException("Invalid task Id:" + taskId));
-        return ResponseEntity.ok(task);
+        return taskRepository.findById(taskId)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @PostMapping("/update-task/{taskId}")

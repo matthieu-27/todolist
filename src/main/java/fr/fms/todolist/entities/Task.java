@@ -62,6 +62,13 @@ public class Task implements Serializable {
         }
     }
 
+    public Task(String title){
+        this.title = title;
+        this.status = Status.TODO;
+        this.scheduledAt = new Date();
+        this.category = null;
+    }
+
     @Override
     public String toString() {
         return "{" +
