@@ -35,11 +35,10 @@ public class Task implements Serializable {
 
     @NotBlank(message = "Title must not be blank.")
     private String title;
-    @NotBlank(message = "Description must not be blank.")
     private String description;
 
     @Enumerated(EnumType.STRING)
-    private Status status;
+    private Status status = Status.TODO;
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date createdAt;
     @DateTimeFormat(pattern = "yyyy-MM-dd")

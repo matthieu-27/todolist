@@ -1,0 +1,38 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="layout">
+<head><title>Connexion</title></head>
+<body>
+<div layout:fragment="content">
+  <div class="row justify-content-center mt-5">
+    <div class="col-md-4">
+      <div class="card shadow-sm">
+        <div class="card-body p-4">
+          <h4 class="mb-4 text-center">Connexion</h4>
+
+          <div th:if="${param.error}" class="alert alert-danger">
+            Identifiants incorrects.
+          </div>
+          <div th:if="${param.logout}" class="alert alert-success">
+            Déconnecté avec succès.
+          </div>
+
+          <form th:action="@{/login}" method="post">
+            <div class="mb-3">
+              <label for="username" class="form-label">Nom d'utilisateur</label>
+              <input id="username" type="text" name="username" class="form-control" required autofocus/>
+            </div>
+            <div class="mb-3">
+              <label for="password" class="form-label">Mot de passe</label>
+              <input id="password" type="password" name="password" class="form-control" required/>
+            </div>
+            <button type="submit" class="btn btn-dark w-100">Se connecter</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

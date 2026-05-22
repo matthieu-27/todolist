@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import org.springframework.security.core.Authentication;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
 
 import fr.fms.todolist.dao.CategoryRepository;
 import fr.fms.todolist.dao.TaskRepository;
@@ -36,6 +37,11 @@ public class TaskController {
 
     @Autowired
     private CategoryRepository categoryRepository;
+
+    @GetMapping("/login")
+    public String loginPage() {
+        return "login";
+    }
 
     @GetMapping("/dashboard")
     public String getProducts() {
@@ -58,7 +64,12 @@ public class TaskController {
         List<Task> todo, doing, done;
         List<Category> categories = categoryRepository.findAll();
 
-        if (authentication != null && authentication.isAuthenticated()) {
+        boolean isAuthenticated = authentication != null
+                && authentication.isAuthenticated()
+                && !(authentication instanceof AnonymousAuthenticationToken);
+        model.addAttribute("isAuthenticated", isAuthenticated);
+
+        if (isAuthenticated) {
             // Utilisateur authentifié : afficher les tâches réelles
             if (weeklyView != null && weeklyView) {
                 // Affichage par semaine
@@ -143,7 +154,8 @@ public class TaskController {
     }
 
     @PostMapping("/create-task")
-    public String submitTask(Model model, @Valid Task task, BindingResult result) {
+    public String submitTask(Model model, @Valid Task task, BindingResult result,
+            @RequestParam(required = false) Long categoryId) {
         if (result.hasFieldErrors()) {
             List<String> errors = new ArrayList<>();
             for (FieldError error : result.getFieldErrors()) {
@@ -154,6 +166,7 @@ public class TaskController {
             model.addAttribute("categories", categoryRepository.findAll());
             return "tasks/form";
         }
+        task.setCategory(categoryId != null ? categoryRepository.findById(categoryId).orElse(null) : null);
         taskRepository.save(task);
         return "redirect:/";
     }
@@ -195,7 +208,8 @@ public class TaskController {
     }
 
     @PostMapping("/update-task/{taskId}")
-    public String updateTask(@PathVariable long taskId, @Valid Task task, BindingResult result, Model model) {
+    public String updateTask(@PathVariable long taskId, @Valid Task task, BindingResult result, Model model,
+            @RequestParam(required = false) Long categoryId) {
         if (result.hasErrors()) {
             List<String> errors = new ArrayList<>();
             for (FieldError error : result.getFieldErrors()) {
@@ -212,7 +226,7 @@ public class TaskController {
         existingTask.setDescription(task.getDescription());
         existingTask.setStatus(task.getStatus());
         existingTask.setScheduledAt(task.getScheduledAt());
-        existingTask.setCategory(task.getCategory());
+        existingTask.setCategory(categoryId != null ? categoryRepository.findById(categoryId).orElse(null) : null);
         taskRepository.save(existingTask);
         return "redirect:/";
     }

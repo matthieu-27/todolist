@@ -2,7 +2,6 @@ package fr.fms.todolist.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -49,7 +48,13 @@ public class SecurityConfig {
                         .requestMatchers("/dashboard").hasRole("USER")
                         .requestMatchers("/create-task").hasRole("USER")
                         .anyRequest().permitAll())
-                .httpBasic(Customizer.withDefaults());
+                .formLogin(form -> form
+                        .loginPage("/login")
+                        .defaultSuccessUrl("/home", true)
+                        .permitAll())
+                .logout(logout -> logout
+                        .logoutSuccessUrl("/home")
+                        .permitAll());
 
         return http.build();
     }

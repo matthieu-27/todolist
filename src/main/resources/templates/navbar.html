@@ -1,34 +1,33 @@
 <!doctype html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
   <body>
     <div th:fragment="navbar">
       <nav class="navbar navbar-expand-lg bg-body-tertiary">
         <div class="container-fluid container">
           <a class="navbar-brand" th:href="@{/}">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="32"
-              height="32"
-              viewBox="0 0 32 32"
-            >
-              <path
-                fill="#008000"
-                d="m17.866 15.509l-.98.98l-.98-.978l-1.957-1.957l.977-.977l1.957 1.957l4.891-4.894l.98.977z"
-              />
-              <path fill="#c00000" d="M14.454 21.443h8.303v1.383h-8.303z" />
-              <path
-                fill="#cfcfcf"
-                d="M2 5.74v23.709h24.909V5.74Zm23.477 22.449l-22.083-.058l.023-20.974h22.077ZM6.151 10.951v5.534h5.534v-5.534ZM10.3 15.1H7.534v-2.766H10.3Zm-4.151 4.22v5.534h5.534v-5.531Zm4.151 4.154H7.534v-2.765H10.3ZM30 2.551V26.24h-1.431L28.549 4l-22.4-.029v-1.42z"
-              />
+            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
+              <path fill="#008000" d="m17.866 15.509l-.98.98l-.98-.978l-1.957-1.957l.977-.977l1.957 1.957l4.891-4.894l.98.977z"/>
+              <path fill="#c00000" d="M14.454 21.443h8.303v1.383h-8.303z"/>
+              <path fill="#cfcfcf" d="M2 5.74v23.709h24.909V5.74Zm23.477 22.449l-22.083-.058l.023-20.974h22.077ZM6.151 10.951v5.534h5.534v-5.534ZM10.3 15.1H7.534v-2.766H10.3Zm-4.151 4.22v5.534h5.534v-5.531Zm4.151 4.154H7.534v-2.765H10.3ZM30 2.551V26.24h-1.431L28.549 4l-22.4-.029v-1.42z"/>
             </svg>
-            TodoList App</a
-          >
+            TodoList App
+          </a>
+
           <div class="d-flex align-items-center gap-3">
-            <a th:href="@{/}" class="btn btn-outline-dark"> Accueil </a>
-            <a th:href="@{/admin}" class="btn btn-outline-dark"> Connexion </a>
-            <a th:href="@{/create-task}" class="btn btn-outline-dark">
-              Créer une tâche
-            </a>
+            <!-- Guest -->
+            <div sec:authorize="isAnonymous()" class="d-flex gap-2">
+              <a th:href="@{/login}" class="btn btn-dark">Se connecter</a>
+            </div>
+
+            <!-- Authenticated -->
+            <div sec:authorize="isAuthenticated()" class="d-flex align-items-center gap-3">
+              <span class="text-muted small" sec:authentication="name"></span>
+              <a th:href="@{/create-task}" class="btn btn-outline-dark">Créer une tâche</a>
+              <form th:action="@{/logout}" method="post" class="m-0">
+                <button type="submit" class="btn btn-outline-danger">Déconnexion</button>
+              </form>
+            </div>
           </div>
         </div>
       </nav>

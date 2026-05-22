@@ -78,15 +78,16 @@
                     <label for="category" class="form-label">Category:</label>
                     <select
                       id="category"
-                      th:field="*{category.id}"
+                      name="categoryId"
                       class="form-select"
                       aria-label="Select a category"
                     >
-                      <option value="">Select a category</option>
+                      <option value="">Aucune catégorie</option>
                       <option
-                        th:each="category : ${categories}"
-                        th:text="${category.name}"
-                        th:value="${category.id}"
+                        th:each="cat : ${categories}"
+                        th:text="${cat.name}"
+                        th:value="${cat.id}"
+                        th:selected="${task.category != null && task.category.id == cat.id}"
                       />
                     </select>
                   </div>
